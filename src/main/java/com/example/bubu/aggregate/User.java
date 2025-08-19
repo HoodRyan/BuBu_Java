@@ -116,4 +116,9 @@ public class User implements Serializable {
                 ", blackListStatus=" + blackListStatus +
                 '}';
     }
+
+    public String getUsername() {
+
+        return getUsername();
+    }
 }
