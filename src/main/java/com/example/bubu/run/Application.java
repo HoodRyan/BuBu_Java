@@ -157,7 +157,7 @@ public class Application {
         if (currentUser != null) {
             System.out.println(currentUser.getUsername() + "님, 이용해주셔서 감사합니다!");
         }
-        System.out.println("좋은 하루 되세요! 👋");
+        System.out.println("좋은 하루 되세요!! 👋");
         sc.close();
         System.exit(0);
     }
