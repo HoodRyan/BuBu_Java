@@ -14,9 +14,13 @@ Application(main) → Service → Repository 의 구조 (Controller X)
 ## 브랜치 전략
 
 ㄴ main
+
 ㄴ feature/user-system
+
 ㄴ feature/board-system
+
 ㄴ feature/bucketlist-system
+
 ㄴ …
 
 ### Self-Review 포인트
