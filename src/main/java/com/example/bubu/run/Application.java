@@ -2,24 +2,15 @@ package com.example.bubu.run;
 
 import com.example.bubu.aggregate.Gender;
 import com.example.bubu.aggregate.Member;
-import com.example.bubu.repository.MemberRepository;
 import com.example.bubu.service.MemberService;
 
 import java.util.Scanner;
 
 public class Application {
 
-    private MemberService memberService;
-    private Member currentMember;   //현재 로그인한 사용자
-    private Scanner sc;
-
-    public Application() {
-        // 의존성 주입
-        MemberRepository memberRepository = new MemberRepository();
-        this.memberService = new MemberService(memberRepository);
-        this.sc = new Scanner(System.in);
-        this.currentMember = null;
-    }
+    private MemberService memberService = new MemberService();
+    private Member currentMember = null;   //현재 로그인한 사용자
+    private Scanner sc= new Scanner(System.in);
 
     public static void main(String[] args) {
         Application app = new Application();
@@ -112,13 +103,15 @@ public class Application {
         System.out.print("이름을 입력하세요: ");
         String name = sc.nextLine();
 
+        System.out.println("1.남성 2.여성 3.기타 ");
         System.out.print("성별을 입력하세요: ");
-        String gender = sc.nextLine();
+        int gender = sc.nextInt();
+        sc.nextLine();
         Gender genderEnum = null;
         switch (gender){
-            case "MALE": genderEnum = Gender.MALE;      break;
-            case "FEMALE": genderEnum = Gender.FEMALE;  break;
-            case "OTHER" : genderEnum = Gender.OTHER;   break;
+            case 1: genderEnum = Gender.MALE;      break;
+            case 2: genderEnum = Gender.FEMALE;  break;
+            case 3 : genderEnum = Gender.OTHER;   break;
         }
 
         System.out.print("전화번호를 입력하세요: ");
@@ -126,9 +119,10 @@ public class Application {
 
         System.out.print("입력할 성향/취향의 갯수를 입력하세요");
         int length = sc.nextInt();
+        sc.nextLine();
         String[] intersets = new String[length];
         for (int i = 0; i < intersets.length; i++) {
-            System.out.println((i+1) + "번째 성향을 입력하세요: ");
+            System.out.print((i+1) + "번째 성향을 입력하세요: ");
             intersets[i] = sc.nextLine();
         }
 

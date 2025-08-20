@@ -1,22 +1,37 @@
 package com.example.bubu.service;
 
+import com.example.bubu.aggregate.AccountStatus;
+import com.example.bubu.aggregate.BlackListStatus;
 import com.example.bubu.aggregate.Member;
 import com.example.bubu.repository.MemberRepository;
 
 public class MemberService {
 
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
     public MemberService() {
         memberRepository = new MemberRepository();
     }
 
-    public MemberService(MemberRepository memberRepository) {
-
-    }
 
     public void registMember(Member registMember) {
 
-        memberRepository.registMember(registMember);
+        /* 설명. 회원 번호 생성 */
+        int lastMemberNo = memberRepository.findLastMemberNo();
+        registMember.setMemberNo(lastMemberNo + 1);
+
+        /* 설명. 회원가입 시 회원활성화 상태 Active, 블랙리스트 여부 DEACTIVE */
+        registMember.setAccountStatus(AccountStatus.getDefaultStatus());
+        registMember.setBlackListStatus(BlackListStatus.getDefaultBlackListStatus());
+
+        /* 설명. 회원가입 성공 여부-> int 값으로 반환 */
+        int result = memberRepository.registMember(registMember);
+
+        if (result == 1) {
+            System.out.println(registMember.getName() + " 회원님 환영합니다.");
+        }else{
+            System.out.println("회원 가입 실패");
+        }
+
     }
 }

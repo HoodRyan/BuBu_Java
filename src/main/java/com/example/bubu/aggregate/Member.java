@@ -25,10 +25,6 @@ public class Member implements Serializable {
         this.gender = gender;
         this.phone = phone;
         this.interests = interests;
-
-        //Enum 기본값 설정
-        this.accountStatus = AccountStatus.getDefaultStatus();
-        this.blackListStatus = BlackListStatus.getDefaultBlackListStatus();
     }
 
     public Member(int memberNo, String id, String pw, String name, Gender gender, String phone, String[] interests, AccountStatus accountStatus, BlackListStatus blackListStatus) {
