@@ -102,4 +102,14 @@ public class MemberRepository {
     public int findLastMemberNo() {
         return memberList.get(memberList.size() - 1).getMemberNo();
     }
+
+    /* 설명. 아이디로 멤버 검색 */
+    public Member findById(String id) {
+        for(Member member : memberList) {
+            if(member.getId().equals(id)) {
+                return member;
+            }
+        }
+        return null;
+    }
 }

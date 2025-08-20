@@ -34,4 +34,24 @@ public class MemberService {
         }
 
     }
+
+    public Member login(String id, String pwd) {
+        /* 설명. id로 검색 */
+        Member findMember = memberRepository.findById(id);
+
+        /* 설명. 유효한 ID 일 때 */
+        if(findMember!=null){
+            /* 설명. 비밀번호가 일치할 때 */
+            if(findMember.getPw().equals(pwd)){
+                return findMember;
+            }else{
+                System.out.println("비밀번호가 틀립니다!");
+                return null;
+            }
+        } else{
+            System.out.println("없는 아이디 입니다!!!");
+            return null;
+        }
+
+    }
 }

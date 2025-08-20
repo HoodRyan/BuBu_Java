@@ -134,13 +134,25 @@ public class Application {
 
     /* 설명. 로그인 기능 */
     private void login() {
+        System.out.print("아이디 입력: ");
+        String id = sc.nextLine();
+        System.out.print("비밀번호 입력: ");
+        String pwd = sc.nextLine();
 
+        Member loginResult = memberService.login(id, pwd);
+        if (loginResult != null) {
+            currentMember = loginResult;
+            System.out.println("     환영합니다, " + currentMember.getName() + "님!");
+            System.out.println("로그인에 성공했습니다!");
+        }else{
+            System.out.println("❌ 로그인에 실패했습니다.");
+        }
     }
 
     /* 설명. 로그아웃 기능 */
     private void logout() {
         if (currentMember != null) {
-            System.out.println("\n" + currentMember.getMemberName() + "님이 로그아웃되었습니다.");
+            System.out.println("\n" + currentMember.getName() + "님이 로그아웃되었습니다.");
             currentMember = null;
             System.out.println("안전하게 로그아웃되었습니다.");
         } else {
@@ -169,7 +181,6 @@ public class Application {
             System.out.println("3. 종료");
         }else{
             // 로그인한 상태
-            System.out.println("     환영합니다, " + currentMember.getMemberName() + "님!");
             System.out.println("=============================");
             System.out.println("1. 내 정보 보기");
             System.out.println("2. 게시판");
@@ -184,7 +195,7 @@ public class Application {
     private void exitProgram() {
         System.out.println("\n프로그램을 종료합니다.");
         if (currentMember != null) {
-            System.out.println(currentMember.getMemberName() + "님, 이용해주셔서 감사합니다!");
+            System.out.println(currentMember.getName() + "님, 이용해주셔서 감사합니다!");
         }
         System.out.println("좋은 하루 되세요! 👋");
         sc.close();

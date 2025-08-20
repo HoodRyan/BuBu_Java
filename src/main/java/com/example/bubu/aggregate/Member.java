@@ -126,8 +126,5 @@ public class Member implements Serializable {
                 '}';
     }
 
-    public String getMemberName() {
 
-        return getMemberName();
-    }
 }
