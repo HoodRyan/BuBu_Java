@@ -1,23 +1,24 @@
 package com.example.bubu.run;
 
-import com.example.bubu.aggregate.User;
-import com.example.bubu.repository.UserRepository;
-import com.example.bubu.service.UserService;
+import com.example.bubu.aggregate.Gender;
+import com.example.bubu.aggregate.Member;
+import com.example.bubu.repository.MemberRepository;
+import com.example.bubu.service.MemberService;
 
 import java.util.Scanner;
 
 public class Application {
 
-    private UserService userService;
-    private User currentUser;   //현재 로그인한 사용자
+    private MemberService memberService;
+    private Member currentMember;   //현재 로그인한 사용자
     private Scanner sc;
 
     public Application() {
         // 의존성 주입
-        UserRepository userRepository = new UserRepository();
-        this.userService = new UserService(userRepository);
+        MemberRepository memberRepository = new MemberRepository();
+        this.memberService = new MemberService(memberRepository);
         this.sc = new Scanner(System.in);
-        this.currentUser = null;
+        this.currentMember = null;
     }
 
     public static void main(String[] args) {
@@ -51,17 +52,17 @@ public class Application {
 
     /* 설명. 메인 메뉴에서 로그인 여부 확인 */
     private void handleInput(int input) {
-        if(currentUser == null) {
+        if(currentMember == null) {
             // 비로그인 시 메뉴 처리
             handleGuestMenu(input);
         }else{
             // 로그인 상태 메뉴 처리
-            handleUserMenu(input);
+            handleMemberMenu(input);
         }
     }
 
     /* 설명. 로그인 상태의 메뉴 처리 */
-    private void handleUserMenu(int input) {
+    private void handleMemberMenu(int input) {
         switch (input) {
             case 1:
                 showMyInfo();
@@ -88,7 +89,7 @@ public class Application {
                 login();
                 break;
             case 2:
-                register();
+                memberService.registMember((Member) signUp());
                 break;
             case 3:
                 exitProgram();
@@ -99,9 +100,43 @@ public class Application {
     }
 
     /* 설명. 회원가입 기능 */
-    private void register() {
+    private Member signUp() {
+        Member member = null;
 
+        System.out.print("아이디를 입력하세요: ");
+        String id = sc.nextLine();
+
+        System.out.print("비밀번호를 입력하세요: ");
+        String pw = sc.nextLine();
+
+        System.out.print("이름을 입력하세요: ");
+        String name = sc.nextLine();
+
+        System.out.print("성별을 입력하세요: ");
+        String gender = sc.nextLine();
+        Gender genderEnum = null;
+        switch (gender){
+            case "MALE": genderEnum = Gender.MALE;      break;
+            case "FEMALE": genderEnum = Gender.FEMALE;  break;
+            case "OTHER" : genderEnum = Gender.OTHER;   break;
+        }
+
+        System.out.print("전화번호를 입력하세요: ");
+        String phone = sc.nextLine();
+
+        System.out.print("입력할 성향/취향의 갯수를 입력하세요");
+        int length = sc.nextInt();
+        String[] intersets = new String[length];
+        for (int i = 0; i < intersets.length; i++) {
+            System.out.println((i+1) + "번째 성향을 입력하세요: ");
+            intersets[i] = sc.nextLine();
+        }
+
+        member = new Member(id, pw, name, genderEnum, phone, intersets);
+
+        return member;
     }
+
 
     /* 설명. 로그인 기능 */
     private void login() {
@@ -110,9 +145,9 @@ public class Application {
 
     /* 설명. 로그아웃 기능 */
     private void logout() {
-        if (currentUser != null) {
-            System.out.println("\n" + currentUser.getUsername() + "님이 로그아웃되었습니다.");
-            currentUser = null;
+        if (currentMember != null) {
+            System.out.println("\n" + currentMember.getMemberName() + "님이 로그아웃되었습니다.");
+            currentMember = null;
             System.out.println("안전하게 로그아웃되었습니다.");
         } else {
             System.out.println("❌ 로그인 상태가 아닙니다.");
@@ -131,7 +166,7 @@ public class Application {
     /* 설명. 메인 메뉴 출력 */
     private void showMainMenu() {
         System.out.println("======= Bucket Buddy =======");
-        if(currentUser == null) {
+        if(currentMember == null) {
             // 비로그인 상태
             System.out.println("         메인 메뉴");
             System.out.println("=============================");
@@ -140,7 +175,7 @@ public class Application {
             System.out.println("3. 종료");
         }else{
             // 로그인한 상태
-            System.out.println("     환영합니다, " + currentUser.getUsername() + "님!");
+            System.out.println("     환영합니다, " + currentMember.getMemberName() + "님!");
             System.out.println("=============================");
             System.out.println("1. 내 정보 보기");
             System.out.println("2. 게시판");
@@ -154,8 +189,8 @@ public class Application {
     /* 설명. 프로그램 종료 기능 */
     private void exitProgram() {
         System.out.println("\n프로그램을 종료합니다.");
-        if (currentUser != null) {
-            System.out.println(currentUser.getUsername() + "님, 이용해주셔서 감사합니다!");
+        if (currentMember != null) {
+            System.out.println(currentMember.getMemberName() + "님, 이용해주셔서 감사합니다!");
         }
         System.out.println("좋은 하루 되세요! 👋");
         sc.close();

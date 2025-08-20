@@ -1,5 +1,9 @@
 package com.example.bubu.aggregate;
 
 public enum BlackListStatus {
-    ACTIVE, DEACTIVE
+    ACTIVE, DEACTIVE;
+
+    public static BlackListStatus getDefaultBlackListStatus(){
+        return DEACTIVE;
+    }
 }

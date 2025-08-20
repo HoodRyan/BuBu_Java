@@ -3,8 +3,8 @@ package com.example.bubu.aggregate;
 import java.io.Serializable;
 import java.util.Arrays;
 
-public class User implements Serializable {
-    private int userNo;     // 회원 번호
+public class Member implements Serializable {
+    private int memberNo;     // 회원 번호
     private String id;      // id
     private String pw;      // pw
     private String name;    // 이름
@@ -14,12 +14,25 @@ public class User implements Serializable {
     private AccountStatus accountStatus;    // 탈퇴여부
     private BlackListStatus blackListStatus;    // 블랙리스트 여부
 
-    public User() {
+    public Member() {
     }
 
+    /* 설명. 회원가입용 생성자 */
+    public Member(String id, String pw, String name, Gender gender, String phone, String[] interests) {
+        this.id = id;
+        this.pw = pw;
+        this.name = name;
+        this.gender = gender;
+        this.phone = phone;
+        this.interests = interests;
 
-    public User(int userNo, String id, String pw, String name, Gender gender, String phone, String[] interests, AccountStatus accountStatus, BlackListStatus blackListStatus) {
-        this.userNo = userNo;
+        //Enum 기본값 설정
+        this.accountStatus = AccountStatus.getDefaultStatus();
+        this.blackListStatus = BlackListStatus.getDefaultBlackListStatus();
+    }
+
+    public Member(int memberNo, String id, String pw, String name, Gender gender, String phone, String[] interests, AccountStatus accountStatus, BlackListStatus blackListStatus) {
+        this.memberNo = memberNo;
         this.id = id;
         this.pw = pw;
         this.name = name;
@@ -30,12 +43,12 @@ public class User implements Serializable {
         this.blackListStatus = blackListStatus;
     }
 
-    public int getUserNo() {
-        return userNo;
+    public int getMemberNo() {
+        return memberNo;
     }
 
-    public void setUserNo(int userNo) {
-        this.userNo = userNo;
+    public void setMemberNo(int memberNo) {
+        this.memberNo = memberNo;
     }
 
     public String getId() {
@@ -104,8 +117,8 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "User{" +
-                "userNo=" + userNo +
+        return "Member{" +
+                "memberNo=" + memberNo +
                 ", id='" + id + '\'' +
                 ", pw='" + pw + '\'' +
                 ", name='" + name + '\'' +
@@ -117,8 +130,8 @@ public class User implements Serializable {
                 '}';
     }
 
-    public String getUsername() {
+    public String getMemberName() {
 
-        return getUsername();
+        return getMemberName();
     }
 }
