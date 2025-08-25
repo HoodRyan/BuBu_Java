@@ -56,7 +56,7 @@ public class Application {
     private void handleMemberMenu(int input) {
         switch (input) {
             case 1:
-                showMyInfo();
+                showMyInfoMenu();
                 break;
             case 2:
                 // 나중에 구현할 게시판 기능
@@ -80,7 +80,7 @@ public class Application {
                 login();
                 break;
             case 2:
-                memberService.registMember((Member) signUp());
+                memberService.registMember(signUp());
                 break;
             case 3:
                 exitProgram();
@@ -117,7 +117,7 @@ public class Application {
         System.out.print("전화번호를 입력하세요: ");
         String phone = sc.nextLine();
 
-        System.out.print("입력할 성향/취향의 갯수를 입력하세요");
+        System.out.print("입력할 성향/취향의 갯수를 입력하세요: ");
         int length = sc.nextInt();
         sc.nextLine();
         String[] intersets = new String[length];
@@ -163,11 +163,95 @@ public class Application {
 
 
 
-    /* 설명. 내 정보 보기 기능*/
+    /* 설명. 내 정보 보기 메뉴 */
+    private void showMyInfoMenu() {
+        while (true) {
+            System.out.println("\n======= 내 정보 메뉴 =======");
+            System.out.println("1. 내 정보 조회");
+            System.out.println("2. 내 정보 수정");
+            System.out.println("3. 내가 작성한 게시글 보기 (추후 구현)");
+            System.out.println("4. 내 버킷리스트 보기 (추후 구현)");
+            System.out.println("5. 회원탈퇴");
+            System.out.println("6. 메인 메뉴로 돌아가기");
+            System.out.println("=============================");
+            System.out.print("번호 선택: ");
+
+            int input = getInput();
+
+            if (handleMyInfoMenu(input)) {
+                break; // 메인 메뉴로 돌아가기가 선택되면 반복문 종료
+            }
+        }
+    }
+
+    /* 설명. 내 정보 보기 메뉴 처리 */
+    private boolean handleMyInfoMenu(int input) {
+        switch (input) {
+            case 1:
+                showMyInfo();
+                break;
+            case 2:
+                updateMyInfo();
+                break;
+            case 3:
+                System.out.println("📋 게시글 관련 기능은 추후 업데이트 예정입니다.");
+                // 게시판 관련 기능은 추후 업데이트 예정
+                break;
+            case 4:
+                System.out.println("📝 버킷리스트 관련 기능은 추후 업데이트 예정입니다.");
+                // 버킷리스트 관련 기능은 추후 업데이트 예정
+                break;
+            case 5:
+                deactivateAccount();
+            case 6:
+                System.out.println("메인 메뉴로 돌아갑니다.");
+                return true; // 메인 메뉴로 돌아가기
+            default:
+                System.out.println("올바른 번호를 선택해주세요.");
+        }
+        return false;   // 내 정보 보기 메뉴 유지
+    }
+
+    /* 설명. 내 정보 보기 기능 */
     private void showMyInfo() {
+        System.out.println("\n" + "=======================");
+        System.out.println("   👤 내 정보 조회");
+        System.out.println("=======================");
+
+        // currentMember 에서 바로 정보 출력
+        System.out.println("📋 기본 정보");
+        System.out.println("=======================");
+        System.out.println("회원번호    : " + currentMember.getMemberNo());
+        System.out.println("아이디      : " + currentMember.getId());
+        System.out.println("이름        : " + currentMember.getName());
+        System.out.println("성별        : " + currentMember.getGender());
+        System.out.println("전화번호    : " + currentMember.getPhone());
+
+        // 관심사
+        System.out.println("\n🎯 관심사/취향");
+        System.out.println("=======================");
+        String[] interests = currentMember.getInterests();
+        if (interests != null && interests.length > 0) {
+            for (int i = 0; i < interests.length; i++) {
+                System.out.println((i + 1) + ". " + interests[i]);
+            }
+        } else {
+            System.out.println("등록된 관심사가 없습니다.");
+        }
+
+        System.out.println("=======================");
+
+
+    }
+
+    /* 설명. 내 정보 수정 기능 */
+    private void updateMyInfo() {
     }
 
 
+    /* 설명. 회원탈퇴 기능 */
+    private void deactivateAccount() {
+    }
 
     /* 설명. 메인 메뉴 출력 */
     private void showMainMenu() {
