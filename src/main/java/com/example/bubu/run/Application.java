@@ -1,5 +1,6 @@
 package com.example.bubu.run;
 
+import com.example.bubu.aggregate.AccountStatus;
 import com.example.bubu.aggregate.Gender;
 import com.example.bubu.aggregate.Member;
 import com.example.bubu.service.MemberService;
@@ -140,10 +141,16 @@ public class Application {
         String pwd = sc.nextLine();
 
         Member loginResult = memberService.login(id, pwd);
-        if (loginResult != null) {
+        if (loginResult != null ) {
+            if (loginResult.getAccountStatus() != AccountStatus.ACTIVE) {
+                System.out.println("❌ 계정이 비활성 상태입니다. 로그인할 수 없습니다.");
+                System.out.println("📞 관리자에게 문의하세요.");
+                return; // 로그인 실패
+            }
             currentMember = loginResult;
             System.out.println("     환영합니다, " + currentMember.getName() + "님!");
             System.out.println("로그인에 성공했습니다!");
+
         }else{
             System.out.println("❌ 로그인에 실패했습니다.");
         }

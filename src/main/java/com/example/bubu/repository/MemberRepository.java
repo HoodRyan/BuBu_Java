@@ -29,6 +29,9 @@ public class MemberRepository {
             defaultMemberList.add(new Member(3, "user03", "pass03", "성길동",
                     Gender.MALE, "010-2221-5568", new String[]{"해외 여행"},
                     AccountStatus.ACTIVE, BlackListStatus.DEACTIVE));
+            defaultMemberList.add(new Member(4, "user04", "pass04", "김길동",
+                    Gender.MALE, "010-3333-6789", new String[]{"독서"},
+                    AccountStatus.DEACTIVE, BlackListStatus.DEACTIVE));
 
             saveMembers(defaultMemberList);
         }
