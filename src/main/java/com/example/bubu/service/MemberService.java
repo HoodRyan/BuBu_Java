@@ -55,4 +55,76 @@ public class MemberService {
 
     }
 
+    public boolean updateMemberInfo(String memId, String newPw, String newName, String newPhone, String[] newInterests) {
+
+        try{
+            Member currentMember = memberRepository.findById(memId);
+            // 회원 정보 업데이트
+            Member updatedMember = createUpdatedMember(currentMember, newPw, newName, newPhone, newInterests);
+
+            // Repository를 통해 저장
+            boolean saveSuccess = memberRepository.updateMember(memId,updatedMember);
+
+            if (saveSuccess) {
+                System.out.println("✅ Service: 회원 정보 수정이 완료되었습니다.");
+                return true;
+            } else {
+                System.out.println("❌ Service: 정보 저장 중 오류가 발생했습니다.");
+                return false;
+            }
+
+        } catch (Exception e) {
+            System.err.println("❌ Service: 정보 수정 중 오류 발생 - " + e.getMessage());
+            return false;
+        }
+    }
+
+
+    /**
+     * 업데이트된 Member 객체 생성
+     */
+    private Member createUpdatedMember(Member original, String newPw, String newName,
+                                       String newPhone, String[] newInterests) {
+        // 원본 객체 복사
+        Member updated = new Member(
+                original.getMemberNo(),
+                original.getId(),
+                original.getPw(),
+                original.getName(),
+                original.getGender(),
+                original.getPhone(),
+                original.getInterests()
+        );
+
+        updated.setAccountStatus(original.getAccountStatus());
+        updated.setBlackListStatus(original.getBlackListStatus());
+
+        // 변경사항 적용
+        if (newPw != null) {
+            updated.setPw(newPw);
+            System.out.println("비밀번호가 변경됩니다.");
+        }
+
+        if (newName != null) {
+            updated.setName(newName);
+            System.out.println("이름이 '" + newName + "'로 변경됩니다.");
+        }
+
+        if (newPhone != null) {
+            updated.setPhone(newPhone);
+            System.out.println("전화번호가 '" + newPhone + "'로 변경됩니다.");
+        }
+
+        if (newInterests != null) {
+            updated.setInterests(newInterests);
+            System.out.print("관심사가 변경됩니다 - ");
+            for (int i = 0; i < newInterests.length; i++) {
+                System.out.print(newInterests[i]);
+                if (i < newInterests.length - 1) System.out.print(", ");
+            }
+            System.out.println();
+        }
+
+        return updated;
+    }
 }

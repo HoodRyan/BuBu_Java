@@ -27,6 +27,20 @@ public class Member implements Serializable {
         this.interests = interests;
     }
 
+    /* 설명. 내 정보 수정용 생성자 */
+    public Member(int memberNo, String id, String pw, String name,
+                  Gender gender, String phone, String[] interests) {
+        this.memberNo = memberNo;
+        this.id = id;
+        this.pw = pw;
+        this.name = name;
+        this.gender = gender;
+        this.phone = phone;
+        this.interests = interests;
+        this.accountStatus = AccountStatus.ACTIVE;
+        this.blackListStatus = BlackListStatus.DEACTIVE;
+    }
+
     public Member(int memberNo, String id, String pw, String name, Gender gender, String phone, String[] interests, AccountStatus accountStatus, BlackListStatus blackListStatus) {
         this.memberNo = memberNo;
         this.id = id;

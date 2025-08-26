@@ -239,6 +239,9 @@ public class Application {
             System.out.println("등록된 관심사가 없습니다.");
         }
 
+        System.out.println("\n📌 아무 키나 누르면 이전 화면으로 돌아갑니다.");
+        sc.nextLine(); // 사용자 입력 대기
+        System.out.println("💫 내 정보 메뉴로 돌아갑니다.");
         System.out.println("=======================");
 
 
@@ -246,10 +249,206 @@ public class Application {
 
     /* 설명. 내 정보 수정 기능 */
     private void updateMyInfo() {
+        System.out.println("\n" + "=======================");
+        System.out.println("   👤 내 정보 수정");
+        System.out.println("=======================");
+
+        try {
+            // 현재 정보 표시 및 수정 입력 받기
+            System.out.println("\n📝 기본 정보 수정");
+            System.out.println("-----------------------");
+
+            // 비밀번호 수정
+            System.out.println("현재 비밀번호: " + currentMember.getPw());
+            System.out.print("새 비밀번호 (변경하지 않으려면 엔터): ");
+            String newPw = sc.nextLine().trim();
+
+            // 이름 수정
+            System.out.println("현재 이름: " + currentMember.getName());
+            System.out.print("새 이름 (변경하지 않으려면 엔터): ");
+            String newName = sc.nextLine().trim();
+
+            // 전화번호 수정
+            System.out.println("현재 전화번호: " + currentMember.getPhone());
+            System.out.print("새 전화번호 (변경하지 않으려면 엔터): ");
+            String newPhone = sc.nextLine().trim();
+
+            // 관심사 수정
+            System.out.println("\n🎯 관심사/취향 수정");
+            System.out.println("-----------------------");
+            System.out.print("현재 관심사: ");
+            String[] currentInterests = currentMember.getInterests();
+            if (currentInterests != null && currentInterests.length > 0) {
+                for (int i = 0; i < currentInterests.length; i++) {
+                    System.out.print(currentInterests[i]);
+                    if (i < currentInterests.length - 1) {
+                        System.out.print(", ");
+                    }
+                }
+                System.out.println();
+            } else {
+                System.out.println("등록된 관심사 없음");
+            }
+
+
+            System.out.print("관심사를 새로 설정하시겠습니까? (y/n): ");
+            String updateInterests = sc.nextLine().trim().toLowerCase();
+
+            String[] newInterests = null;
+            if (updateInterests.equals("y") || updateInterests.equals("yes")) {
+                System.out.print("새로운 관심사 개수를 입력하세요: ");
+                int interestCount = sc.nextInt();
+                sc.nextLine(); // 개행 제거
+
+                newInterests = new String[interestCount];
+                for (int i = 0; i < interestCount; i++) {
+                    System.out.print((i + 1) + "번째 관심사: ");
+                    newInterests[i] = sc.nextLine().trim();
+                }
+            }
+
+            // ✅ 변경사항 체크 (새로 추가된 부분!)
+            boolean hasChanges = checkForChanges(newPw, newName, newPhone, newInterests);
+
+            if (!hasChanges) {
+                System.out.println("\n" + "=".repeat(40));
+                System.out.println("📋 변경 내용 확인");
+                System.out.println("=".repeat(40));
+                System.out.println("변경된 내용이 없습니다.");
+                System.out.println("=".repeat(40));
+                System.out.println("💫 내 정보 메뉴로 돌아갑니다.");
+                return; // ← 여기서 메서드 종료! (메뉴로 복귀)
+            }
+            
+            // 수정 내용 확인
+            showUpdatePreview(newPw, newName, newPhone, newInterests);
+
+            System.out.print("위 내용으로 수정하시겠습니까? (y/n): ");
+            String confirm = sc.nextLine().trim().toLowerCase();
+
+            if (confirm.equals("y") || confirm.equals("yes")) {
+                // Service를 통해 정보 수정 요청
+                boolean updateSuccess = memberService.updateMemberInfo(
+                        currentMember.getId(),
+                        newPw.isEmpty() ? null : newPw,
+                        newName.isEmpty() ? null : newName,
+                        newPhone.isEmpty() ? null : newPhone,
+                        newInterests
+                );
+
+                if (updateSuccess) {
+                    // currentMember 정보도 업데이트 (메모리 동기화)
+                    updateCurrentMemberInfo(newPw, newName, newPhone, newInterests);
+
+                    System.out.println("✅ 정보 수정이 완료되었습니다!");
+                    System.out.print("변경된 정보를 확인하시겠습니까? (y/n): ");
+                    String viewUpdate = sc.nextLine().trim().toLowerCase();
+
+                    if (viewUpdate.equals("y") || viewUpdate.equals("yes")) {
+                        showMyInfo();
+                    }
+                } else {
+                    System.out.println("❌ 정보 수정에 실패했습니다.");
+                    System.out.println("다시 시도해주세요.");
+                }
+            } else {
+                System.out.println("수정이 취소되었습니다.");
+            }
+
+        } catch (Exception e) {
+            System.out.println("❌ 입력 처리 중 오류가 발생했습니다: " + e.getMessage());
+            System.out.println("다시 시도해주세요.");
+        }
+    }
+
+    private boolean checkForChanges(String newPw, String newName, String newPhone, String[] newInterests) {
+        boolean hasChanges = false;
+
+        // 비밀번호 변경 여부
+        if (!newPw.isEmpty()) {
+            hasChanges = true;
+        }
+
+        // 이름 변경 여부
+        if (!newName.isEmpty()) {
+            hasChanges = true;
+        }
+
+        // 전화번호 변경 여부
+        if (!newPhone.isEmpty()) {
+            hasChanges = true;
+        }
+
+        // 관심사 변경 여부
+        if (newInterests != null) {
+            hasChanges = true;
+        }
+
+        return hasChanges;
+    }
+
+    private void updateCurrentMemberInfo(String newPw, String newName, String newPhone, String[] newInterests) {
+        if (!newPw.isEmpty()) {
+            currentMember.setPw(newPw);
+        }
+        if (!newName.isEmpty()) {
+            currentMember.setName(newName);
+        }
+        if (!newPhone.isEmpty()) {
+            currentMember.setPhone(newPhone);
+        }
+        if (newInterests != null) {
+            currentMember.setInterests(newInterests);
+        }
+
+        System.out.println("🔄 현재 로그인 정보가 업데이트되었습니다.");
+    }
+
+    private void showUpdatePreview(String newPw, String newName, String newPhone, String[] newInterests) {
+        System.out.println("\n" + "=======================");
+        System.out.println("📋 수정 내용 확인");
+        System.out.println("\n" + "=======================");
+
+        boolean hasChanges = false;
+
+        if (!newPw.isEmpty()) {
+            System.out.println("비밀번호: " + currentMember.getPw() + " → " + newPw);
+            hasChanges = true;
+        }
+
+        if (!newName.isEmpty()) {
+            System.out.println("이름: " + currentMember.getName() + " → " + newName);
+            hasChanges = true;
+        }
+
+        if (!newPhone.isEmpty()) {
+            System.out.println("전화번호: " + currentMember.getPhone() + " → " + newPhone);
+            hasChanges = true;
+        }
+
+        if (newInterests != null) {
+            System.out.print("관심사: ");
+            for (int i = 0; i < newInterests.length; i++) {
+                System.out.print(newInterests[i]);
+                if (i < newInterests.length - 1) {
+                    System.out.print(", ");
+                }
+            }
+            System.out.println(" [새로 설정]");
+            hasChanges = true;
+        }
+
+        if (!hasChanges) {
+            System.out.println("변경된 내용이 없습니다.");
+        }
+
+        System.out.println("\n" + "=======================");
     }
 
 
-    /* 설명. 회원탈퇴 기능 */
+
+
+/* 설명. 회원탈퇴 기능 */
     private void deactivateAccount() {
     }
 

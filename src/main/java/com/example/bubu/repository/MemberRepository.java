@@ -8,6 +8,7 @@ import com.example.bubu.stream.MyObjectOutput;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MemberRepository {
     
@@ -111,5 +112,69 @@ public class MemberRepository {
             }
         }
         return null;
+    }
+
+    public boolean updateMember(String memId, Member updatedMember) {
+        System.out.println("💾 ID '" + memId + "'의 정보를 업데이트합니다.");
+
+        if (!file.exists() || file.length() == 0) {
+            System.out.println("❌ Repository: 회원 데이터 파일이 존재하지 않습니다.");
+            return false;
+        }
+
+        // 1. 모든 회원 정보 읽기
+        List<Member> allMembers = new ArrayList<>();
+        boolean memberFound = false;
+
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+
+            while (true) {
+                try {
+                    Member member = (Member) ois.readObject();
+
+                    // 업데이트할 회원이면 새 정보로 교체 (ID로 비교!)
+                    if (member.getId().equals(memId)) {
+                        allMembers.add(updatedMember);
+                        memberFound = true;
+                        System.out.println("🔄 ID : '" + memId + "' 회원 정보를 찾아서 업데이트합니다.");
+                    } else {
+                        allMembers.add(member); // 다른 회원들은 그대로 유지
+                    }
+
+                } catch (EOFException e) {
+                    break;
+                }
+            }
+
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("❌ Repository: 파일 읽기 오류 - " + e.getMessage());
+            return false;
+        }
+
+        if (!memberFound) {
+            System.out.println("❌ Repository: ID '" + memId + "'인 회원을 찾을 수 없습니다.");
+            return false;
+        }
+
+        // 2. 모든 회원 정보를 새로 저장 (업데이트된 정보 포함)
+        return saveAllMembers(allMembers);
+
+    }
+
+    private boolean saveAllMembers(List<Member> members) {
+        System.out.println("💾 Repository: 전체 회원 데이터를 저장합니다.");
+
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
+
+            for (Member member : members) {
+                oos.writeObject(member);
+            }
+
+            return true;
+
+        } catch (IOException e) {
+            System.err.println("❌ Repository: 파일 저장 오류 - " + e.getMessage());
+            return false;
+        }
     }
 }
