@@ -127,4 +127,39 @@ public class MemberService {
 
         return updated;
     }
+
+    public boolean deactivateAccount(String memId) {
+        try {
+            // 1. 현재 회원 정보 조회
+            Member currentMember = memberRepository.findById(memId);
+            if (currentMember == null) {
+                System.out.println("해당 회원을 찾을 수 없습니다.");
+                return false;
+            }
+
+            // 2. 이미 탈퇴한 회원인지 확인
+            if (currentMember.getAccountStatus() != AccountStatus.ACTIVE) {
+                System.out.println("이미 비활성화된 계정입니다.");
+                return false;
+            }
+
+            // 3. 계정 상태를 DEACTIVE 로 변경
+            currentMember.setAccountStatus(AccountStatus.DEACTIVE);
+
+            // 4. Repository를 통해 저장
+            boolean saveSuccess = memberRepository.updateMember(memId, currentMember);
+
+            if (saveSuccess) {
+                System.out.println("계정 비활성화 완료");
+                return true;
+            } else {
+                System.out.println("계정 비활성화 저장 실패");
+                return false;
+            }
+
+        } catch (Exception e) {
+            System.err.println("계정 비활성화 중 오류 발생 - " + e.getMessage());
+            return false;
+        }
+    }
 }

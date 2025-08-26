@@ -210,6 +210,7 @@ public class Application {
                 break;
             case 5:
                 deactivateAccount();
+                break;
             case 6:
                 System.out.println("메인 메뉴로 돌아갑니다.");
                 return true; // 메인 메뉴로 돌아가기
@@ -222,7 +223,7 @@ public class Application {
     /* 설명. 내 정보 보기 기능 */
     private void showMyInfo() {
         System.out.println("\n" + "=======================");
-        System.out.println("   👤 내 정보 조회");
+        System.out.println("👤 내 정보 조회");
         System.out.println("=======================");
 
         // currentMember 에서 바로 정보 출력
@@ -314,15 +315,15 @@ public class Application {
                 }
             }
 
-            // ✅ 변경사항 체크 (새로 추가된 부분!)
+            // ✅ 변경사항 체크
             boolean hasChanges = checkForChanges(newPw, newName, newPhone, newInterests);
 
             if (!hasChanges) {
-                System.out.println("\n" + "=".repeat(40));
+                System.out.println("=======================");
                 System.out.println("📋 변경 내용 확인");
-                System.out.println("=".repeat(40));
+                System.out.println("=======================");
                 System.out.println("변경된 내용이 없습니다.");
-                System.out.println("=".repeat(40));
+                System.out.println("=======================");
                 System.out.println("💫 내 정보 메뉴로 돌아갑니다.");
                 return; // ← 여기서 메서드 종료! (메뉴로 복귀)
             }
@@ -455,8 +456,62 @@ public class Application {
 
 
 
-/* 설명. 회원탈퇴 기능 */
+/* 설명. 회원탈퇴 기능 : 데이터는 삭제 X, 계정 활성화 여부 -> 비활성화 */
     private void deactivateAccount() {
+        System.out.println("\n=======================");
+        System.out.println("⚠️ 회원탈퇴");
+        System.out.println("=======================");
+        System.out.println("탈퇴 시 다음 사항을 확인해주세요.");
+        System.out.println("-----------------------");
+        System.out.println("• 계정이 비활성화됩니다.");
+        System.out.println("• 작성한 게시글과 댓글은 유지됩니다.");
+        System.out.println("• 비활성화된 계정으로는 로그인할 수 없습니다.");
+        System.out.println("=======================");
+
+        // 1단계: 비밀번호 확인
+        System.out.print("탈퇴를 위해 현재 비밀번호를 입력해주세요: ");
+        String passwordConfirm = sc.nextLine().trim();
+
+        if (!currentMember.getPw().equals(passwordConfirm)) {
+            System.out.println("비밀번호가 올바르지 않습니다.");
+            System.out.println("탈퇴가 취소되었습니다.");
+            return;
+        }
+
+        // 2단계: 최종 확인
+        System.out.println("\n=======================");
+        System.out.println("최종 확인");
+        System.out.println("=======================");
+        System.out.println("정말로 탈퇴하시겠습니까?");
+        System.out.println("이 작업은 되돌릴 수 없습니다.");
+        System.out.print("탈퇴하려면 '회원탈퇴'를 입력하세요: ");
+        String finalConfirm = sc.nextLine().trim();
+
+        if (!finalConfirm.equals("회원탈퇴")) {
+            System.out.println("탈퇴가 취소되었습니다.");
+            return;
+        }
+
+        // 3단계: Service를 통해 탈퇴 처리
+        boolean deactivateSuccess = memberService.deactivateAccount(currentMember.getId());
+
+        if (deactivateSuccess) {
+            System.out.println("\n=======================");
+            System.out.println("회원탈퇴가 완료되었습니다.");
+            System.out.println(currentMember.getName() + "님, 그동안 이용해주셔서 감사했습니다.");
+            System.out.println("더 나은 서비스로 찾아뵙겠습니다.");
+            System.out.println("=======================");
+
+            // 자동 로그아웃 처리
+            currentMember = null;
+
+            System.out.println("\n메인 메뉴로 돌아갑니다.");
+            returnToMainMenu();
+
+        } else {
+            System.out.println("회원탈퇴에 실패했습니다.");
+            System.out.println("시스템 오류가 발생했습니다. 다시 시도해주세요.");
+        }
     }
 
     /* 설명. 메인 메뉴 출력 */

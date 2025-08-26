@@ -150,12 +150,12 @@ public class MemberRepository {
             }
 
         } catch (IOException | ClassNotFoundException e) {
-            System.err.println("❌ Repository: 파일 읽기 오류 - " + e.getMessage());
+            System.err.println("❌ 파일 읽기 오류 - " + e.getMessage());
             return false;
         }
 
         if (!memberFound) {
-            System.out.println("❌ Repository: ID '" + memId + "'인 회원을 찾을 수 없습니다.");
+            System.out.println("❌ ID '" + memId + "'인 회원을 찾을 수 없습니다.");
             return false;
         }
 
@@ -165,7 +165,7 @@ public class MemberRepository {
     }
 
     private boolean saveAllMembers(List<Member> members) {
-        System.out.println("💾 Repository: 전체 회원 데이터를 저장합니다.");
+        System.out.println("💾 전체 회원 데이터를 저장합니다.");
 
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
 
