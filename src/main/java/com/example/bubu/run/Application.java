@@ -3,7 +3,7 @@ package com.example.bubu.run;
 import com.example.bubu.aggregate.member.AccountStatus;
 import com.example.bubu.aggregate.member.Gender;
 import com.example.bubu.aggregate.member.Member;
-import com.example.bubu.service.MemberService;
+import com.example.bubu.service.memberService.MemberService;
 
 import java.util.Scanner;
 
@@ -60,18 +60,73 @@ public class Application {
                 showMyInfoMenu();
                 break;
             case 2:
+                bucketListMenu();
+                break;
+            case 3:
                 // 나중에 구현할 게시판 기능
                 System.out.println("게시판 기능은 추후 구현 예정입니다.");
                 break;
-            case 3:
+            case 4:
                 logout();
                 break;
-            case 4:
+            case 5:
                 exitProgram();
                 break;
             default:
                 System.out.println("올바른 번호를 선택해주세요.");
         }
+    }
+
+    private void bucketListMenu() {
+        while (true) {
+            System.out.println("\n======= 버킷리스트 메뉴 =======");
+            System.out.println("1. 버킷리스트 작성");
+            System.out.println("2. 내 버킷리스트 보기");
+            System.out.println("3. 버킷리스트 수정");
+            System.out.println("4. 버킷리스트 삭제");
+            System.out.println("5. 완료한 버킷리스트");
+            System.out.println("6. 메인 메뉴로 돌아가기");
+            System.out.println("=============================");
+            System.out.print("번호 선택: ");
+
+            int input = getInput();
+
+            if (handleBucketListMenu(input)) {
+                break; // 메인 메뉴로 돌아가기
+            }
+        }
+
+    }
+
+    private boolean handleBucketListMenu(int input) {
+        switch (input) {
+            case 1:
+                // createBucketList();
+                System.out.println("버킷리스트 작성 기능 구현 예정");
+                break;
+            case 2:
+                // showMyBucketLists();
+                System.out.println("버킷리스트 조회 기능 구현 예정");
+                break;
+            case 3:
+                // updateBucketList();
+                System.out.println("버킷리스트 수정 기능 구현 예정");
+                break;
+            case 4:
+                // deleteBucketList();
+                System.out.println("버킷리스트 삭제 기능 구현 예정");
+                break;
+            case 5:
+                // showCompletedBucketLists();
+                System.out.println("완료된 버킷리스트 조회 기능 구현 예정");
+                break;
+            case 6:
+                System.out.println("메인 메뉴로 돌아갑니다.");
+                return true;
+            default:
+                System.out.println("올바른 번호를 선택해주세요.");
+        }
+        return false;
     }
 
     /* 설명. 비로그인 상태의 메뉴 처리 */
@@ -528,9 +583,10 @@ public class Application {
             // 로그인한 상태
             System.out.println("=============================");
             System.out.println("1. 내 정보 보기");
-            System.out.println("2. 게시판");
-            System.out.println("3. 로그아웃");
-            System.out.println("4. 종료");
+            System.out.println("2. 버킷리스트 관리");
+            System.out.println("3. 게시판");
+            System.out.println("4. 로그아웃");
+            System.out.println("5. 종료");
         }
         System.out.println("=============================");
         System.out.print("번호 선택: ");

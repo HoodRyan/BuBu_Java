@@ -5,8 +5,8 @@ import java.time.LocalDateTime;
 
 public class BucketList implements Serializable {
     private int bucketNo;               // 버킷리스트 번호
-    private String bucketListTitle;               // 버킷리스트 제목
-    private String bucketListContents;            // 버킷리스트 내용
+    private String bucketListTitle;     // 버킷리스트 제목
+    private String bucketListContents;  // 버킷리스트 내용
     private LocalDateTime createdDate;  // 작성 일자
     private int bucketViews;            // 조회수
     private int milestoneRate;          // 마일스톤 달성률

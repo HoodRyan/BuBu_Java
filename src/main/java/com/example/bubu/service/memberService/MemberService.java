@@ -1,9 +1,9 @@
-package com.example.bubu.service;
+package com.example.bubu.service.memberService;
 
 import com.example.bubu.aggregate.member.AccountStatus;
 import com.example.bubu.aggregate.member.BlackListStatus;
 import com.example.bubu.aggregate.member.Member;
-import com.example.bubu.repository.MemberRepository;
+import com.example.bubu.repository.memberRepository.MemberRepository;
 
 public class MemberService {
 

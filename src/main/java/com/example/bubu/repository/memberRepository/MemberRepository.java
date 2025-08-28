@@ -1,4 +1,4 @@
-package com.example.bubu.repository;
+package com.example.bubu.repository.memberRepository;
 
 import com.example.bubu.aggregate.member.AccountStatus;
 import com.example.bubu.aggregate.member.BlackListStatus;
