@@ -1,6 +1,141 @@
 package com.example.bubu.repository.bucketlistRepository;
 
+import com.example.bubu.aggregate.bucketlist.BucketList;
+import com.example.bubu.aggregate.member.AccountStatus;
+import com.example.bubu.aggregate.member.BlackListStatus;
+import com.example.bubu.aggregate.member.Gender;
+import com.example.bubu.aggregate.member.Member;
+import com.example.bubu.stream.MyObjectOutput;
+
+import java.io.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+
 public class BucketListRepository {
+    private final ArrayList<BucketList> bucketList = new ArrayList<>();
+    private final File file = new File("src/main/java/com/example/bubu/db/bucketListDB.dat");
+
+    /* 설명. 프로그램 구동 시 처음 실행할 내용들(기본 버킷리스트 넣기)*/
+    public BucketListRepository() {
+        if(!file.exists()) {
+            ArrayList<BucketList> defaultBucketList = new ArrayList<>();
+            defaultBucketList.add(
+                    new BucketList(1,
+                            "동아시아 여행가기",
+                            "평소에 가 보고 싶었던 동아시아의 국가들 방문하기",
+                            LocalDateTime.of(2024, 1, 25, 16, 20),
+                            0,
+                            0,
+                            0,
+                            1
+                    )
+            );
+            defaultBucketList.add(
+                    new BucketList(2,
+                            "수영 배우기",
+                            "자유형,평형,배형 배워서 올 여름에는 꼭 수영을 해보자~!",
+                            LocalDateTime.of(2024, 3, 12, 5, 10),
+                            10,
+                            0,
+                            100,
+                            2
+                    )
+            );
+            defaultBucketList.add(
+                    new BucketList(3,
+                            "요리 배우기",
+                            "자취요리의 신이 되는 그날까지...",
+                            LocalDateTime.of(2025, 2, 22, 1, 50),
+                            135,
+                            30,
+                            56,
+                            3
+                    )
+            );
+            defaultBucketList.add(
+                    new BucketList(4,
+                            "코딩 배우기",
+                            "태어나길 문과생으로...이제는 코딩을 배울 시간이다...",
+                            LocalDateTime.of(2025, 12, 30, 17, 23),
+                            33,
+                            0,
+                            8,
+                            4
+                    )
+            );
+            saveBucketList(defaultBucketList);
+        }
+        loadBucketList();
+    }
+
+    /* 설명. ArrayList<BucketList> 를 받으면 파일로 컬렉션에 담긴 버킷리스트들을 출력하는 메소드(feat. 덮어씌우는 기능) */
+    private void saveBucketList(ArrayList<BucketList> bucketLists) {
+        ObjectOutputStream oos = null;
+        try {
+            oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
+
+            for(BucketList bucketList : bucketLists) {
+                oos.writeObject(bucketList);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }finally {
+            try {
+                if(oos != null) oos.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 
 
+
+    private void loadBucketList() {
+        try (ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)))){
+            while(true) {
+                bucketList.add((BucketList) ois.readObject());
+            }
+        } catch(EOFException e) {
+            System.out.println("버킷리스트 정보 읽어오기 완료!!");
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
+    /* 설명. 버킷리스트 번호 자동생성 (버킷번호 -1 번의 번호 부여) */
+    public int findLastBucketNo() {
+        return bucketList.get(bucketList.size() - 1).getBucketNo();
+    }
+
+    public boolean createBucketList(BucketList bucketLists) {
+        MyObjectOutput moo = null;
+        boolean result = false;
+        try {
+            moo = new MyObjectOutput(new BufferedOutputStream(new FileOutputStream(file, true)));
+            moo.writeObject(bucketLists);
+            moo.flush();        // 내부적으로 Buffered를 쓰고 있으니 객체 출력 강제화
+
+            /* 설명. 컬렉션에 담긴 기존 회원을 지우고 다시 파일의 정보를 토대로 컬렉션이 회원으로 채워지도록 작성 */
+            bucketList.clear();
+            loadBucketList();
+
+            result = true;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }finally {
+            try {
+                if(moo != null) moo.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return result;
+    }
 }

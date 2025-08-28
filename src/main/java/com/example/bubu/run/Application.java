@@ -1,8 +1,10 @@
 package com.example.bubu.run;
 
+import com.example.bubu.aggregate.bucketlist.BucketList;
 import com.example.bubu.aggregate.member.AccountStatus;
 import com.example.bubu.aggregate.member.Gender;
 import com.example.bubu.aggregate.member.Member;
+import com.example.bubu.service.bucketlistService.BucketListService;
 import com.example.bubu.service.memberService.MemberService;
 
 import java.util.Scanner;
@@ -10,6 +12,7 @@ import java.util.Scanner;
 public class Application {
 
     private MemberService memberService = new MemberService();
+    private BucketListService bucketService = new BucketListService();
     private Member currentMember = null;   //현재 로그인한 사용자
     private Scanner sc= new Scanner(System.in);
 
@@ -77,6 +80,7 @@ public class Application {
         }
     }
 
+    /* 설명. 버킷리스트 관리 메뉴 */
     private void bucketListMenu() {
         while (true) {
             System.out.println("\n======= 버킷리스트 메뉴 =======");
@@ -98,11 +102,11 @@ public class Application {
 
     }
 
+    /* 설명. 버킷리스트 관리 메뉴 처리*/
     private boolean handleBucketListMenu(int input) {
         switch (input) {
             case 1:
-                // createBucketList();
-                System.out.println("버킷리스트 작성 기능 구현 예정");
+                bucketService.createBucketList(inputBucketListInfo());
                 break;
             case 2:
                 // showMyBucketLists();
@@ -127,6 +131,36 @@ public class Application {
                 System.out.println("올바른 번호를 선택해주세요.");
         }
         return false;
+    }
+
+    private BucketList inputBucketListInfo() {
+        System.out.println("\n=======================");
+        System.out.println("📝 버킷리스트 작성");
+        System.out.println("=======================");
+
+        System.out.print("제목을 입력하세요: ");
+        String title = sc.nextLine().trim();
+
+        if (title.isEmpty()) {
+            System.out.println("❌ 제목은 필수 입력 항목입니다.");
+            return null;
+        }
+
+        System.out.print("내용을 입력하세요: ");
+        String contents = sc.nextLine().trim();
+
+        if (contents.isEmpty()) {
+            System.out.println("❌ 내용은 필수 입력 항목입니다.");
+            return null;
+        }
+
+        // 사용자가 입력한 제목과 내용만으로 BucketList 객체 생성
+        BucketList bucketList = new BucketList();
+        bucketList.setBucketListTitle(title);
+        bucketList.setBucketListContents(contents);
+        bucketList.setMemberNo(currentMember.getMemberNo()); // 현재 로그인한 사용자
+
+        return bucketList;
     }
 
     /* 설명. 비로그인 상태의 메뉴 처리 */
@@ -424,6 +458,7 @@ public class Application {
         }
     }
 
+    /* 설명. 내 정보 수정 여부 확인 */
     private boolean checkForChanges(String newPw, String newName, String newPhone, String[] newInterests) {
         boolean hasChanges = false;
 
@@ -450,6 +485,7 @@ public class Application {
         return hasChanges;
     }
 
+    /* 설명. 수정된 로그인 정보 */
     private void updateCurrentMemberInfo(String newPw, String newName, String newPhone, String[] newInterests) {
         if (!newPw.isEmpty()) {
             currentMember.setPw(newPw);
@@ -467,6 +503,7 @@ public class Application {
         System.out.println("🔄 현재 로그인 정보가 업데이트되었습니다.");
     }
 
+    /* 설명. 수정할 내 정보 확인 */
     private void showUpdatePreview(String newPw, String newName, String newPhone, String[] newInterests) {
         System.out.println("\n" + "=======================");
         System.out.println("📋 수정 내용 확인");
