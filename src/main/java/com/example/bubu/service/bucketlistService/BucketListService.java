@@ -4,6 +4,8 @@ import com.example.bubu.aggregate.bucketlist.BucketList;
 import com.example.bubu.repository.bucketlistRepository.BucketListRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BucketListService {
     private final BucketListRepository bucketListRepository;
@@ -88,5 +90,62 @@ public class BucketListService {
         }
 
         return true;
+    }
+
+    public List<BucketList> getMyBucketLists(int memberNo) {
+        System.out.println("회원번호 " + memberNo + "의 버킷리스트를 조회합니다.");
+
+        try {
+            List<BucketList> allBucketLists = bucketListRepository.findAllMyBucketList();
+            List<BucketList> myBucketLists = new ArrayList<>();
+
+            // 해당 회원의 버킷리스트만 필터링
+            for (BucketList bucket : allBucketLists) {
+                if (bucket.getMemberNo() == memberNo) {
+                    myBucketLists.add(bucket);
+                }
+            }
+
+            // 작성일 기준으로 최신순 정렬 (최근 작성한 것부터)
+            myBucketLists.sort((b1, b2) ->
+                    b2.getCreatedDate().compareTo(b1.getCreatedDate()));
+
+            System.out.println(myBucketLists.size() + "개의 버킷리스트를 찾았습니다.");
+            return myBucketLists;
+
+        } catch (Exception e) {
+            System.err.println("버킷리스트 조회 중 오류 발생 - " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    public BucketList getBucketListDetail(int selectedBucketNo) {
+        System.out.println("버킷리스트 " + selectedBucketNo + " 상세 조회");
+
+        try {
+            // 1. 버킷리스트 조회
+            BucketList bucket = bucketListRepository.findByBucketNo(selectedBucketNo);
+
+            if (bucket == null) {
+                System.out.println("Service: 해당 버킷리스트를 찾을 수 없습니다.");
+                return null;
+            }
+
+            // 2. 조회수 증가
+            bucket.setBucketViews(bucket.getBucketViews() + 1);
+
+            // 3. 업데이트된 조회수를 파일에 저장
+            boolean updateSuccess = bucketListRepository.updateBucketList(selectedBucketNo, bucket);
+
+            if (updateSuccess) {
+                System.out.println("Service: 조회수가 " + bucket.getBucketViews() + "로 증가했습니다.");
+            }
+
+            return bucket;
+
+        } catch (Exception e) {
+            System.err.println("Service: 상세 조회 중 오류 발생 - " + e.getMessage());
+            return null;
+        }
     }
 }

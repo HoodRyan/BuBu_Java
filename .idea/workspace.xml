@@ -4,7 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ec9d7d5a-7854-4855-92d5-4380dabbc0d7" name="Changes" comment="" />
+    <list default="true" id="ec9d7d5a-7854-4855-92d5-4380dabbc0d7" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/example/bubu/run/Application.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/com/example/bubu/run/Application.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/bubu/db/bucketListDB.dat" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/bubu/db/bucketListDB.dat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/bubu/repository/bucketlistRepository/BucketListRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/bubu/repository/bucketlistRepository/BucketListRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/bubu/run/Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/bubu/run/Application.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/bubu/service/bucketlistService/BucketListService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/bubu/service/bucketlistService/BucketListService.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -44,7 +51,7 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "feature/user-system",
+    "git-widget-placeholder": "feature/bucketlist-system",
     "ignore.virus.scanning.warn.message": "true",
     "last_opened_file_path": "C:/miniproject/BucketBuddy",
     "node.js.detected.package.eslint": "true",
@@ -102,7 +109,9 @@
       <workItem from="1756166458229" duration="36000" />
       <workItem from="1756190466080" duration="8499000" />
       <workItem from="1756339088697" duration="77000" />
-      <workItem from="1756364924899" duration="8830000" />
+      <workItem from="1756364924899" duration="9063000" />
+      <workItem from="1756425284737" duration="7000" />
+      <workItem from="1756457883437" duration="3134000" />
     </task>
     <servers />
   </component>

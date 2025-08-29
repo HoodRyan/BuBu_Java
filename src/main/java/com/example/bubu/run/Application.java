@@ -7,6 +7,8 @@ import com.example.bubu.aggregate.member.Member;
 import com.example.bubu.service.bucketlistService.BucketListService;
 import com.example.bubu.service.memberService.MemberService;
 
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Scanner;
 
 public class Application {
@@ -109,7 +111,7 @@ public class Application {
                 bucketService.createBucketList(inputBucketListInfo());
                 break;
             case 2:
-                // showMyBucketLists();
+                showMyBucketLists();
                 System.out.println("버킷리스트 조회 기능 구현 예정");
                 break;
             case 3:
@@ -131,6 +133,137 @@ public class Application {
                 System.out.println("올바른 번호를 선택해주세요.");
         }
         return false;
+    }
+
+    /* 설명. 내 버킷리스트 목록 보기 */
+    private void showMyBucketLists() {
+        System.out.println("\n=======================");
+        System.out.println("내 버킷리스트 목록");
+        System.out.println("=======================");
+
+        // Service를 통해 내 버킷리스트 목록 조회
+        List<BucketList> myBucketLists 
+                = bucketService.getMyBucketLists(currentMember.getMemberNo());
+
+        if (myBucketLists.isEmpty()) {
+            System.out.println("작성된 버킷리스트가 없습니다.");
+            System.out.println("새로운 버킷리스트를 작성해보세요!");
+            return;
+        }
+
+        // 버킷리스트 목록 출력
+        System.out.printf("%-5s %-30s %-20s%n", "번호", "제목", "작성일");
+        System.out.println("-".repeat(60));
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        for (BucketList bucket : myBucketLists) {
+            String title = bucket.getBucketListTitle();
+
+            System.out.printf("%-5d %-30s %-20s%n",
+                    bucket.getBucketNo(),
+                    title,
+                    bucket.getCreatedDate().format(formatter));
+        }
+
+        System.out.println("----------------------");
+        System.out.println("총 " + myBucketLists.size() + "개의 버킷리스트");
+
+        // 상세 보기 선택
+        System.out.println("\n상세히 보고 싶은 버킷리스트 번호를 입력하세요.");
+        System.out.println("(돌아가려면 0을 입력)");
+        System.out.print("번호 입력: ");
+
+        try {
+            int selectedBucketNo = sc.nextInt();
+            sc.nextLine(); // 개행 제거
+
+            if (selectedBucketNo == 0) {
+                return; // 버킷리스트 메뉴로 돌아가기
+            }
+
+            // 선택한 번호가 목록에 있는지 확인
+            boolean found = false;
+            for (BucketList bucket : myBucketLists) {
+                if (bucket.getBucketNo() == selectedBucketNo) {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (found) {
+                showBucketListDetail(selectedBucketNo);
+            } else {
+                System.out.println("잘못된 번호입니다. 목록에 있는 번호를 입력해주세요.");
+            }
+
+        } catch (Exception e) {
+            sc.nextLine(); // 잘못된 입력 제거
+            System.out.println("올바른 숫자를 입력해주세요.");
+        }
+    }
+
+    /* 설명. 버킷리스트 상세 조회 */
+    private void showBucketListDetail(int selectedBucketNo) {
+        // Service를 통해 버킷리스트 상세 정보 조회 (조회수 증가 포함)
+        List<BucketList> myBucketLists = bucketService.getMyBucketLists(currentMember.getMemberNo());
+        BucketList bucket = bucketService.getBucketListDetail(selectedBucketNo);
+
+        if (bucket == null) {
+            System.out.println("버킷리스트를 찾을 수 없습니다.");
+            return;
+        }
+
+        System.out.println("=========================");
+        System.out.println("버킷리스트 상세 정보");
+        System.out.println("=========================");
+
+        System.out.println("번호: " + bucket.getBucketNo());
+        System.out.println("제목: " + bucket.getBucketListTitle());
+        System.out.println("작성자: " + currentMember.getName() + " (회원번호: " + bucket.getMemberNo() + ")");
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH시 mm분");
+        System.out.println("작성일: " + bucket.getCreatedDate().format(formatter));
+
+        System.out.print("\n내용:");
+        System.out.println(bucket.getBucketListContents());
+        System.out.println("=========================");
+
+        System.out.println("\n통계 정보:");
+        System.out.println("조회수: " + bucket.getBucketViews());
+        System.out.println("달성률: " + bucket.getMilestoneRate() + "%");
+        System.out.println("추천수: " + bucket.getBucketRec());
+
+        System.out.println("=========================");
+
+        // 추가 작업 선택
+        System.out.println("\n다음 작업을 선택하세요:");
+        System.out.println("1. 목록으로 돌아가기");
+        System.out.println("2. 수정하기");
+        System.out.println("3. 삭제하기");
+        System.out.print("선택: ");
+
+        try {
+            int choice = sc.nextInt();
+            sc.nextLine(); // 개행 제거
+
+            switch (choice) {
+                case 1:
+                    showMyBucketLists(); // 목록으로 돌아가기
+                    break;
+                case 2:
+                    System.out.println("수정 기능은 추후 구현 예정입니다.");
+                    break;
+                case 3:
+                    System.out.println("삭제 기능은 추후 구현 예정입니다.");
+                    break;
+                default:
+                    System.out.println("목록으로 돌아갑니다.");
+            }
+        } catch (Exception e) {
+            sc.nextLine(); // 잘못된 입력 제거
+            System.out.println("목록으로 돌아갑니다.");
+        }
     }
 
     private BucketList inputBucketListInfo() {

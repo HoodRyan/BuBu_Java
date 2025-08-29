@@ -10,6 +10,7 @@ import com.example.bubu.stream.MyObjectOutput;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 public class BucketListRepository {
     private final ArrayList<BucketList> bucketList = new ArrayList<>();
@@ -38,7 +39,7 @@ public class BucketListRepository {
                             10,
                             0,
                             100,
-                            2
+                            1
                     )
             );
             defaultBucketList.add(
@@ -137,5 +138,121 @@ public class BucketListRepository {
         }
 
         return result;
+    }
+
+    public BucketList findByBucketNo(int selectedBucketNo) {
+        System.out.println("버킷리스트 번호 " + selectedBucketNo + "를 검색합니다.");
+
+        if (!file.exists() || file.length() == 0) {
+            return null;
+        }
+
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+
+            while (true) {
+                try {
+                    BucketList bucket = (BucketList) ois.readObject();
+                    if (bucket.getBucketNo() == selectedBucketNo) {
+                        System.out.println("버킷리스트를 찾았습니다 - " + bucket.getBucketListTitle());
+                        return bucket;
+                    }
+                } catch (EOFException e) {
+                    break;
+                }
+            }
+
+            System.out.println("버킷리스트 번호 " + selectedBucketNo + "를 찾을 수 없습니다.");
+            return null;
+
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("검색 중 오류 발생 - " + e.getMessage());
+            return null;
+        }
+    }
+
+    public boolean updateBucketList(int selectedBucketNo, BucketList updatedBucketList) {
+        System.out.println("버킷리스트 번호 " + selectedBucketNo + "를 업데이트합니다.");
+
+        if (!file.exists() || file.length() == 0) {
+            return false;
+        }
+
+        // 1. 모든 버킷리스트 읽기
+        List<BucketList> allBuckets = new ArrayList<>();
+        boolean bucketFound = false;
+
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+
+            while (true) {
+                try {
+                    BucketList bucket = (BucketList) ois.readObject();
+
+                    if (bucket.getBucketNo() == selectedBucketNo) {
+                        allBuckets.add(updatedBucketList);
+                        bucketFound = true;
+                        System.out.println("버킷리스트를 찾아서 업데이트합니다.");
+                    } else {
+                        allBuckets.add(bucket);
+                    }
+                } catch (EOFException e) {
+                    break;
+                }
+            }
+
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("파일 읽기 오류 - " + e.getMessage());
+            return false;
+        }
+
+        if (!bucketFound) {
+            System.out.println("업데이트할 버킷리스트를 찾을 수 없습니다.");
+            return false;
+        }
+
+        // 2. 모든 버킷리스트를 새로 저장
+        return saveAll(allBuckets);
+    }
+
+    private boolean saveAll(List<BucketList> bucketLists) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
+
+            for (BucketList bucket : bucketLists) {
+                oos.writeObject(bucket);
+            }
+
+            System.out.println(bucketLists.size() + "개의 버킷리스트 저장 완료");
+            return true;
+
+        } catch (IOException e) {
+            System.err.println("파일 저장 오류 - " + e.getMessage());
+            return false;
+        }
+    }
+
+    public List<BucketList> findAllMyBucketList() {
+        List<BucketList> bucketLists = new ArrayList<>();
+
+        if (!file.exists() || file.length() == 0) {
+            System.out.println("Repository: 버킷리스트 데이터 파일이 없습니다.");
+            return bucketLists;
+        }
+
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+
+            while (true) {
+                try {
+                    BucketList bucket = (BucketList) ois.readObject();
+                    bucketLists.add(bucket);
+                } catch (EOFException e) {
+                    break;
+                }
+            }
+
+
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("Repository: 파일 읽기 오류 - " + e.getMessage());
+        }
+
+        return bucketLists;
     }
 }
