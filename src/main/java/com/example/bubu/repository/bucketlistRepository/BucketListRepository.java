@@ -251,4 +251,18 @@ public class BucketListRepository {
 
         return bucketLists;
     }
+
+    public boolean deleteByBucketNo(int bucketNo) {
+        List<BucketList> bucketList = findAllMyBucketList();
+
+        // bucketNo에 해당하는 아이템 찾아서 삭제
+        boolean removed = bucketList.removeIf(item -> item.getBucketNo() == bucketNo);
+
+        if (removed) {
+            saveAll(bucketList);
+            return true;
+        }
+        return false;
+
+    }
 }

@@ -143,4 +143,22 @@ public class BucketListService {
             return null;
         }
     }
+
+    public boolean deleteBucketList(int bucketNo) {
+        BucketList existNo = bucketListRepository.findByBucketNo(bucketNo);
+        if (existNo == null) {
+            System.out.println("버킷 번호 " + bucketNo + "에 해당하는 항목이 없습니다.");
+            return false;
+        }
+
+        // 삭제 실행
+        boolean deleted = bucketListRepository.deleteByBucketNo(bucketNo);
+        if (deleted) {
+            System.out.println("버킷 번호 " + bucketNo + " 항목이 성공적으로 삭제되었습니다.");
+        } else {
+            System.out.println("삭제 중 오류가 발생했습니다.");
+        }
+
+        return deleted;
+    }
 }
