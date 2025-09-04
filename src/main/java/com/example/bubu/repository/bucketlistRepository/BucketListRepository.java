@@ -28,7 +28,7 @@ public class BucketListRepository {
                             0,
                             0,
                             0,
-                            1
+                            123
                     )
             );
             defaultBucketList.add(
@@ -39,7 +39,7 @@ public class BucketListRepository {
                             10,
                             0,
                             100,
-                            1
+                            124
                     )
             );
             defaultBucketList.add(
@@ -50,7 +50,7 @@ public class BucketListRepository {
                             135,
                             30,
                             56,
-                            3
+                            125
                     )
             );
             defaultBucketList.add(
@@ -61,7 +61,7 @@ public class BucketListRepository {
                             33,
                             0,
                             8,
-                            4
+                            126
                     )
             );
             saveBucketList(defaultBucketList);
@@ -111,7 +111,10 @@ public class BucketListRepository {
 
     /* 설명. 버킷리스트 번호 자동생성 (버킷번호 -1 번의 번호 부여) */
     public int findLastBucketNo() {
-        return bucketList.get(bucketList.size() - 1).getBucketNo();
+        if(bucketList.isEmpty()) {
+            return 1;
+        }
+        return bucketList.get(bucketList.size() - 1).getBucketNo() + 1;
     }
 
     public boolean createBucketList(BucketList bucketLists) {
@@ -141,8 +144,6 @@ public class BucketListRepository {
     }
 
     public BucketList findByBucketNo(int selectedBucketNo) {
-        System.out.println("버킷리스트 번호 " + selectedBucketNo + "를 검색합니다.");
-
         if (!file.exists() || file.length() == 0) {
             return null;
         }
@@ -153,7 +154,6 @@ public class BucketListRepository {
                 try {
                     BucketList bucket = (BucketList) ois.readObject();
                     if (bucket.getBucketNo() == selectedBucketNo) {
-                        System.out.println("버킷리스트를 찾았습니다 - " + bucket.getBucketListTitle());
                         return bucket;
                     }
                 } catch (EOFException e) {
@@ -171,8 +171,6 @@ public class BucketListRepository {
     }
 
     public boolean updateBucketList(int selectedBucketNo, BucketList updatedBucketList) {
-        System.out.println("버킷리스트 번호 " + selectedBucketNo + "를 업데이트합니다.");
-
         if (!file.exists() || file.length() == 0) {
             return false;
         }
@@ -190,7 +188,6 @@ public class BucketListRepository {
                     if (bucket.getBucketNo() == selectedBucketNo) {
                         allBuckets.add(updatedBucketList);
                         bucketFound = true;
-                        System.out.println("버킷리스트를 찾아서 업데이트합니다.");
                     } else {
                         allBuckets.add(bucket);
                     }
@@ -220,7 +217,6 @@ public class BucketListRepository {
                 oos.writeObject(bucket);
             }
 
-            System.out.println(bucketLists.size() + "개의 버킷리스트 저장 완료");
             return true;
 
         } catch (IOException e) {

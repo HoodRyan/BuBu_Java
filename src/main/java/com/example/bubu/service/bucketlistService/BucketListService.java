@@ -93,8 +93,6 @@ public class BucketListService {
     }
 
     public List<BucketList> getMyBucketLists(int memberNo) {
-        System.out.println("회원번호 " + memberNo + "의 버킷리스트를 조회합니다.");
-
         try {
             List<BucketList> allBucketLists = bucketListRepository.findAllMyBucketList();
             List<BucketList> myBucketLists = new ArrayList<>();
@@ -110,7 +108,6 @@ public class BucketListService {
             myBucketLists.sort((b1, b2) ->
                     b2.getCreatedDate().compareTo(b1.getCreatedDate()));
 
-            System.out.println(myBucketLists.size() + "개의 버킷리스트를 찾았습니다.");
             return myBucketLists;
 
         } catch (Exception e) {
@@ -120,8 +117,6 @@ public class BucketListService {
     }
 
     public BucketList getBucketListDetail(int selectedBucketNo) {
-        System.out.println("버킷리스트 " + selectedBucketNo + " 상세 조회");
-
         try {
             // 1. 버킷리스트 조회
             BucketList bucket = bucketListRepository.findByBucketNo(selectedBucketNo);
